@@ -10,6 +10,13 @@ class AppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = '__all__'
 
+class AppointmentReadSerializer(serializers.ModelSerializer):
+    owner = serializers.StringRelatedField()
+    house = serializers.StringRelatedField()
+
+    class Meta:
+        model = Appointment
+        fields = '__all__'
 
 class HouseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,7 +25,7 @@ class HouseSerializer(serializers.ModelSerializer):
 
 
 class HouseReadSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
+    owner = serializers.StringRelatedField()
 
     class Meta:
         model = House
