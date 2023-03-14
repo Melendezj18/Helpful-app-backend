@@ -5,7 +5,7 @@ from rest_framework import status, generics
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user, authenticate, login, logout
 
-from ..serializers import UserSerializer, UserRegisterSerializer
+from ..serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer
 from ..models.user import User
 
 
@@ -60,3 +60,20 @@ class SignOut(generics.DestroyAPIView):
         request.user.delete_token()
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ChangePassword(generics.UpdateAPIView):
+    def partial_update(self, request):
+        user = request.user
+        serializer = ChangePasswordSerializer(data=request.data['passwords'])
+        if serializer.is_valid():
+
+            if not user.check_password(serializer.data['old']):
+                return Response({'msg': 'Wrong password'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+            user.set_password(serializer.data['new'])
+            user.save()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models.user import User
-# from .models.house import House
-# from .models.appointment import Appointment
+from .models.house import House
+from .models.appointment import Appointment
 
 class UserAdmin(BaseUserAdmin):
     ordering = ['id']
@@ -40,4 +40,5 @@ class UserAdmin(BaseUserAdmin):
 # register the model and tell Django to use the above UserAdmin
 # class to format the pages:
 admin.site.register(User, UserAdmin)
-# admin.site.register(House)
+admin.site.register(House)
+admin.site.register(Appointment)

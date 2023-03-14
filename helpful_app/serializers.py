@@ -2,27 +2,27 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models.user import User
-# from .models.appointment import Appointment
-# from .models.house import House
+from .models.appointment import Appointment
+from .models.house import House
 
-# class AppointmentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Appointment
-#         fields = '__all__'
-
-
-# class HouseSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = House
-#         fields = '__all__'
+class AppointmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Appointment
+        fields = '__all__'
 
 
-# class HouseReadSerializer(serializers.ModelSerializer):
-#     author = serializers.StringRelatedField()
+class HouseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = House
+        fields = '__all__'
 
-#     class Meta:
-#         model = House
-#         fields = '__all__'
+
+class HouseReadSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+
+    class Meta:
+        model = House
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     # This model serializer will be used for User creation
@@ -58,4 +58,8 @@ class UserRegisterSerializer(serializers.Serializer):
                 'Please make sure your passwords match.')
         # if all is well, return the data
         return data
-
+    
+class ChangePasswordSerializer(serializers.Serializer):
+    model = get_user_model()
+    old = serializers.CharField(required=True)
+    new = serializers.CharField(required=True)
