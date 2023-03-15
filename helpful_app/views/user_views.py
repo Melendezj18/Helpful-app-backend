@@ -5,9 +5,8 @@ from rest_framework import status, generics
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user, authenticate, login, logout
 
-from ..serializers import UserSerializer, UserRegisterSerializer, ChangePasswordSerializer
+from ..serializers import UserSerializer, UserRegisterSerializer
 from ..models.user import User
-
 
 class SignUp(generics.CreateAPIView):
     authentication_classes = ()
@@ -20,12 +19,11 @@ class SignUp(generics.CreateAPIView):
             created_user = UserSerializer(data=user.data)
             if created_user.is_valid():
                 created_user.save()
-                return Response({'user': created_user.data}, status=status.HTTP_201_CREATED)
+                return Response({ 'user': created_user.data }, status=status.HTTP_201_CREATED)
             else:
                 return Response(created_user.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class SignIn(generics.CreateAPIView):
     authentication_classes = ()
@@ -36,8 +34,7 @@ class SignIn(generics.CreateAPIView):
         creds = request.data
         print(creds)
 
-        user = authenticate(
-            request, email=creds['email'], password=creds['password'])
+        user = authenticate(request, email=creds['email'], password=creds['password'])
 
         if user is not None:
             if user.is_active:
@@ -50,30 +47,12 @@ class SignIn(generics.CreateAPIView):
                     }
                 })
             else:
-                return Response({'msg': 'The account is inactive.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({ 'msg': 'The account is inactive.' }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'msg': 'The username and/or password is incorrect.'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-
+            return Response({ 'msg': 'The username and/or password is incorrect.' }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 class SignOut(generics.DestroyAPIView):
-    def delete(self, request):
+    def delete(self, request): 
         request.user.delete_token()
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class ChangePassword(generics.UpdateAPIView):
-    def partial_update(self, request):
-        user = request.user
-        serializer = ChangePasswordSerializer(data=request.data['passwords'])
-        if serializer.is_valid():
-
-            if not user.check_password(serializer.data['old']):
-                return Response({'msg': 'Wrong password'}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-
-            user.set_password(serializer.data['new'])
-            user.save()
-
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
