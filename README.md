@@ -40,7 +40,7 @@ Helpful is a web app designed for users to find all their handyman and cleaning 
 <img width="500px" src='readme_img/Helpful trello.jpg'>
 
 ### ERD:
-<img width="500px" src='readme_img/readme_img/Helpful app ERD.jpg'>
+<img width="500px" src='readme_img/Helpful app ERD.jpg'>
 
 
 ---
